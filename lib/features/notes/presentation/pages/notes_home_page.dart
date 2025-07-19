@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../widgets/notes_navigation_rail.dart';
-import '../widgets/note_card.dart';
 
 class NotesHomePage extends StatefulWidget {
   const NotesHomePage({super.key});
@@ -11,6 +10,7 @@ class NotesHomePage extends StatefulWidget {
 
 class _NotesHomePageState extends State<NotesHomePage> {
   int _selectedIndex = 0;
+  bool _isRailExtended = false;
 
   @override
   Widget build(BuildContext context) {
@@ -24,31 +24,20 @@ class _NotesHomePageState extends State<NotesHomePage> {
                 _selectedIndex = index;
               });
             },
+            extended: _isRailExtended,
+            onLeadingTap: () {
+              setState(() {
+                _isRailExtended = !_isRailExtended;
+              });
+            },
           ),
           Expanded(
-            child: _buildContent(),
+            child: Center(
+              child: Text('Selected index: $_selectedIndex'),
+            ),
           ),
         ],
       ),
     );
-  }
-
-  Widget _buildContent() {
-    // Switch content based on _selectedIndex
-    switch (_selectedIndex) {
-      case 0:
-        return ListView(
-          children: [
-            NoteCard(title: "Note 1", content: "Sample content", count: 100),
-            // ... more notes
-          ],
-        );
-      case 1:
-        return Center(child: Text("Edit Note Page"));
-      case 2:
-        return Center(child: Text("Delete Note Page"));
-      default:
-        return Container();
-    }
   }
 }
