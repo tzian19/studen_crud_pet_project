@@ -15,6 +15,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
+          floatingActionButtonTheme: const FloatingActionButtonThemeData(
+            elevation: 3,
+            shape: CircleBorder(),
+          ),
       ),
       home: const NotesHomePage(),
       debugShowCheckedModeBanner: false,

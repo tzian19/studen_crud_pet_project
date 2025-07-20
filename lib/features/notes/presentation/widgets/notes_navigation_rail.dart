@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:super_tooltip/super_tooltip.dart';
 
 class NotesNavigationRail extends StatelessWidget {
   final int selectedIndex;
@@ -40,27 +39,36 @@ class NotesNavigationRail extends StatelessWidget {
       labelType: NavigationRailLabelType.none,
       
       leading: Column (
-         crossAxisAlignment: CrossAxisAlignment.center,
+         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
             IconButton(
             icon: leadingLogo(selectedIndex),
-            tooltip: 'Extend Navigation',
+            tooltip: extended ? 'Minimize' : 'Expand',
             onPressed: onLeadingTap,
           ),
          ],
       ),
       destinations: const [
         NavigationRailDestination(
-          icon: Icon(Icons.menu_book),
+          icon: Tooltip( 
+            message: 'Menu',
+            child: Icon(Icons.menu_book),
+            ),
           label: Text('View Notes'),
         ),
         NavigationRailDestination(
-          icon: Icon(Icons.edit),
-          label: Text('Edit Note'),
+          icon: Tooltip( 
+            message: 'View',
+            child: Icon(Icons.edit),
+            ),
+          label: Text('Edit Notes'),
         ),
         NavigationRailDestination(
-          icon: Icon(Icons.delete),
-          label: Text('Delete Note'),
+          icon: Tooltip( 
+            message: 'Delete',
+            child: Icon(Icons.delete),
+            ),
+          label: Text('Delete Notes'),
         ),
       ],
     );
