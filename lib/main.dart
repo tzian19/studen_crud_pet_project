@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
           floatingActionButtonTheme: const FloatingActionButtonThemeData(
             elevation: 3,
-            shape: CircleBorder(),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
           ),
       ),
       home: const NotesHomePage(),

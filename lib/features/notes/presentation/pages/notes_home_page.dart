@@ -56,26 +56,32 @@ class _NotesHomePageState extends State<NotesHomePage> with SingleTickerProvider
             child: TabBarView(
               controller: _tabController,
               children: [
-                // View Notes Page
-                ListView.builder(
+Container(
+                  color: Color.fromRGBO(93, 67, 134, 1), // (#5D4386)
+                  child: ListView.builder(
                   itemCount: notes.length,
                   itemBuilder: (context, index) {
                     final note = notes[index];
                     return NoteCard(
-                      image: Image.network((note.imageUrl).isEmpty ? 'https://www.svgrepo.com/show/42233/pencil-edit-button.svg' : note.imageUrl),
+                        image: Image.network((note.imageUrl).isEmpty ? 'https://cdn-icons-png.flaticon.com/512/1250/1250680.png' : note.imageUrl),
                       title: note.title,
                       content: note.content,
                       count: note.count,
                     );
                   },
                 ),
-                // Edit Notes Page
-                Center(
+                ),
+                Container(
+                  color: Colors.green[50], // Light green background for Edit Notes
+                  child: Center(
                   child: Text('Edit Notes'),
                 ),
-                // Delete Notes Page
-                Center(
+                ),
+                Container(
+                  color: Colors.red[50], // Light red background for Delete Notes
+                  child: Center(
                   child: Text('Delete Notes'),
+                  ),
                 ),
               ],
             ),
