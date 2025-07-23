@@ -5,27 +5,27 @@ class NoteCard extends StatelessWidget {
   final String title;
   final String content;
   final int count;
-
+  final VoidCallback onTap;
   const NoteCard({
     super.key,
     required this.image,
     required this.title,
     required this.content,
     required this.count,
+    required this.onTap,
   });
-
-
   @override
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
         leading: SizedBox(
           width: 50,
-          child: image ,
+          child: image,
         ),
         title: Text(title),
         subtitle: Text(content),
         trailing: Text('$count+'),
+        onTap: onTap,
       ),
     );
   }

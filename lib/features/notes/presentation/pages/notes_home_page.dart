@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:studen_crud_pet_project/features/notes/presentation/pages/note_view_page.dart';
 import '../widgets/notes_navigation_rail.dart';
 import '../widgets/note_card.dart';
 import '../../domain/entities/note.dart';
@@ -9,7 +10,6 @@ class NotesHomePage extends StatefulWidget {
 }
 class _NotesHomePageState extends State<NotesHomePage> with SingleTickerProviderStateMixin {
   int _selectedIndex = 0;
-  bool _isRailExtended = false;
   late TabController _tabController;
   List<Note> notes = []; // Add this line to store notes
 @override
@@ -45,28 +45,46 @@ class _NotesHomePageState extends State<NotesHomePage> with SingleTickerProvider
                 _tabController.animateTo(index);
               });
             },
-            extended: _isRailExtended,
-            onLeadingTap: () {
-              setState(() {
-                _isRailExtended = !_isRailExtended;
-              });
-            },
+            
           ),
           Expanded(
             child: TabBarView(
               controller: _tabController,
               children: [
-Container(
-                  color: Color.fromRGBO(93, 67, 134, 1), // (#5D4386)
+                Container(
+                  color: Color.fromRGBO(93, 67, 134, 1),
                   child: ListView.builder(
                   itemCount: notes.length,
                   itemBuilder: (context, index) {
                     final note = notes[index];
                     return NoteCard(
-                        image: Image.network((note.imageUrl).isEmpty ? 'https://cdn-icons-png.flaticon.com/512/1250/1250680.png' : note.imageUrl),
+                        image: Image.network(
+                          (note.imageUrl).isEmpty
+                              ? 'https://cdn-icons-png.flaticon.com/512/1250/1250680.png'
+                              : note.imageUrl,
+                        ),
                       title: note.title,
                       content: note.content,
                       count: note.count,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => NoteViewPage(
+                                note: note,
+                                onEdit: (note) {
+                                  // TODO: Implement edit functionality
+                                },
+                                onDelete: (id) {
+                                  setState(() {
+                                    notes.removeWhere((n) => n.id == id);
+                                  });
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ),
+                          );
+                        },
                     );
                   },
                 ),
@@ -88,14 +106,14 @@ Container(
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
+floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           // TODO: Implement add note functionality
         },
-        label: const Text('Add'),
+        backgroundColor: Theme.of(context).colorScheme.primary,
         icon: const Icon(Icons.add),
+        label: const Text('Add', style: TextStyle(fontSize: 16)),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
