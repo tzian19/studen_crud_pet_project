@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:studen_crud_pet_project/features/notes/presentation/pages/edit_note_page.dart';
+import '../../presentation/pages/add_note_page.dart';
 import '../../domain/entities/note.dart';
 
 class NoteViewPage extends StatelessWidget {
@@ -40,11 +42,25 @@ class NoteViewPage extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => onEdit(note),
-        icon: const Icon(Icons.edit),
-        label: const Text('Edit', style: TextStyle(fontSize: 16)),
-        backgroundColor: Theme.of(context).colorScheme.primary,
+  onPressed: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => EditNotePage(
+          note: note,
+          onSave: (updatedNote) {
+            // Call the callback after edit
+            onEdit(updatedNote);
+          },
+        ),
       ),
+    );
+  },
+  icon: const Icon(Icons.edit),
+  label: const Text('Edit', style: TextStyle(fontSize: 16)),
+  backgroundColor: Theme.of(context).colorScheme.primary,
+),
+
     );
   }
 

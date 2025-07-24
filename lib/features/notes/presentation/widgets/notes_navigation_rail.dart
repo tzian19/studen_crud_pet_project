@@ -12,17 +12,17 @@ class NotesNavigationRail extends StatelessWidget {
 
   Icon leadingLogo(int selectedPage){
     
-    double _size = 40;
+    double size = 40;
 
     switch (selectedPage) {
       case 0:
-        return Icon(Icons.menu_book, size: _size,);
+        return Icon(Icons.image, size: size,);
       case 1:
-        return Icon(Icons.edit,size: _size);
+        return Icon(Icons.audio_file,size: size);
       case 2:
-        return Icon(Icons.delete, size: _size);
+        return Icon(Icons.image, size: size);
       default:
-        return Icon(Icons.menu, size: _size);
+        return Icon(Icons.menu, size: size);
     }
   }
 
@@ -43,25 +43,25 @@ class NotesNavigationRail extends StatelessWidget {
       destinations: const [
         NavigationRailDestination(
           icon: Tooltip( 
-            message: 'Menu',
+            message: 'Notes',
             child: 
-              Icon(Icons.menu_book),
+              Icon(Icons.image),
             ),
-          label: Text('View Notes'),
+          label: Text('Image Notes'),
         ),
         NavigationRailDestination(
           icon: Tooltip( 
-            message: 'Edit',
-            child: Icon(Icons.edit),
+            message: 'Audio',
+            child: Icon(Icons.audio_file),
             ),
-          label: Text('Edit Notes'),
+          label: Text('Audio Notes'),
         ),
         NavigationRailDestination(
           icon: Tooltip( 
-            message: 'Delete',
-            child: Icon(Icons.delete),
+            message: 'Image',
+            child: Icon(Icons.image),
             ),
-          label: Text('Delete Notes'),
+          label: Text('Image Notes'),
         ),
       ],
     );

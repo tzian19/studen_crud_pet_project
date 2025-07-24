@@ -1,30 +1,33 @@
 import 'package:flutter/material.dart';
 import '../../domain/entities/note.dart';
-class AddNotePage extends StatefulWidget {
-  final Function(Note) onAdd;
-  final int noteType; // 0: Regular, 1: Music, 2: Image
-  const AddNotePage({
+
+class EditNotePage extends StatefulWidget {
+  final Note note;
+  final Function(Note) onSave;
+
+  const EditNotePage({
     super.key,
-    required this.onAdd,
-    this.noteType = 0,
+    required this.note,
+    required this.onSave,
   });
+
   @override
-  State<AddNotePage> createState() => _AddNotePageState();
+  State<EditNotePage> createState() => _EditNotePageState();
 }
-class _AddNotePageState extends State<AddNotePage> {
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _contentController = TextEditingController();
-  final TextEditingController _imageUrlController = TextEditingController();
+
+class _EditNotePageState extends State<EditNotePage> {
+  late final TextEditingController _titleController;
+  late final TextEditingController _contentController;
+  late final TextEditingController _imageUrlController;
+
   @override
   void initState() {
     super.initState();
-    // Set default image URL based on note type
-    _imageUrlController.text = widget.noteType == 1
-        ? 'https://cdn-icons-png.flaticon.com/512/3659/3659784.png'
-        : widget.noteType == 2
-            ? 'https://cdn-icons-png.flaticon.com/512/1375/1375106.png'
-            : '';
+    _titleController = TextEditingController(text: widget.note.title);
+    _contentController = TextEditingController(text: widget.note.content);
+    _imageUrlController = TextEditingController(text: widget.note.imageUrl);
   }
+
   @override
   void dispose() {
     _titleController.dispose();
@@ -32,6 +35,7 @@ class _AddNotePageState extends State<AddNotePage> {
     _imageUrlController.dispose();
     super.dispose();
   }
+
   void _saveNote() {
     if (_titleController.text.trim().isEmpty || _contentController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -39,30 +43,27 @@ class _AddNotePageState extends State<AddNotePage> {
       );
       return;
     }
-    final newNote = Note(
-      id: DateTime.now().toString(),
+
+    final updatedNote = widget.note.copyWith(
       title: _titleController.text.trim(),
       content: _contentController.text.trim(),
       imageUrl: _imageUrlController.text.trim(),
     );
-    widget.onAdd(newNote);
+
+    widget.onSave(updatedNote);
     Navigator.pop(context);
   }
+
   @override
   Widget build(BuildContext context) {
-    String noteType = widget.noteType == 0
-        ? 'Note'
-        : widget.noteType == 1
-            ? 'Music Note'
-            : 'Image Note';
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add $noteType'),
+        title: const Text('Edit Note'),
         actions: [
           IconButton(
             icon: const Icon(Icons.save),
             onPressed: _saveNote,
-            tooltip: 'Save Note',
+            tooltip: 'Save Changes',
           ),
         ],
       ),
@@ -79,16 +80,17 @@ class _AddNotePageState extends State<AddNotePage> {
             if (_imageUrlController.text.trim().isNotEmpty)
               Image.network(
                 _imageUrlController.text.trim(),
-          height: 180,
-          width: double.infinity,
-          fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
-        ),
+                height: 180,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
+              ),
           ],
         ),
       ),
-      );
-    }
+    );
+  }
+
   Widget _buildTextField(TextEditingController controller, String label, {int maxLines = 1}) {
     return TextField(
       controller: controller,
