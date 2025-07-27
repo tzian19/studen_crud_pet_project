@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:studen_crud_pet_project/features/notes/presentation/pages/edit_note_page.dart';
-import '../../presentation/pages/add_note_page.dart';
 import '../../domain/entities/note.dart';
 
 class NoteViewPage extends StatelessWidget {

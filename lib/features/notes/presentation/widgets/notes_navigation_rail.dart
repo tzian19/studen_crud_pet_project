@@ -16,11 +16,11 @@ class NotesNavigationRail extends StatelessWidget {
 
     switch (selectedPage) {
       case 0:
-        return Icon(Icons.image, size: size,);
+        return Icon(Icons.note, size: size);
       case 1:
-        return Icon(Icons.audio_file,size: size);
+        return Icon(Icons.audio_file, size: size);
       case 2:
-        return Icon(Icons.image, size: size);
+        return Icon(Icons.text_snippet, size: size);
       default:
         return Icon(Icons.menu, size: size);
     }
@@ -45,9 +45,9 @@ class NotesNavigationRail extends StatelessWidget {
           icon: Tooltip( 
             message: 'Notes',
             child: 
-              Icon(Icons.image),
+              Icon(Icons.note),
             ),
-          label: Text('Image Notes'),
+          label: Text('Notes'),
         ),
         NavigationRailDestination(
           icon: Tooltip( 
@@ -58,10 +58,10 @@ class NotesNavigationRail extends StatelessWidget {
         ),
         NavigationRailDestination(
           icon: Tooltip( 
-            message: 'Image',
-            child: Icon(Icons.image),
+            message: 'Text',
+            child: Icon(Icons.text_snippet),
             ),
-          label: Text('Image Notes'),
+          label: Text('Text Notes'),
         ),
       ],
     );

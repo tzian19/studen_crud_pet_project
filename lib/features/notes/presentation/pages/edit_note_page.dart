@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../domain/entities/note.dart';
+import 'dart:io';
 
 class EditNotePage extends StatefulWidget {
   final Note note;
@@ -19,6 +21,17 @@ class _EditNotePageState extends State<EditNotePage> {
   late final TextEditingController _titleController;
   late final TextEditingController _contentController;
   late final TextEditingController _imageUrlController;
+
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _pickImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        _imageUrlController.text = image.path;
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -56,6 +69,8 @@ class _EditNotePageState extends State<EditNotePage> {
 
   @override
   Widget build(BuildContext context) {
+    final imagePath = _imageUrlController.text.trim();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Note'),
@@ -75,16 +90,35 @@ class _EditNotePageState extends State<EditNotePage> {
             const SizedBox(height: 12),
             _buildTextField(_contentController, 'Content', maxLines: 6),
             const SizedBox(height: 12),
-            _buildTextField(_imageUrlController, 'Image URL'),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildTextField(_imageUrlController, 'File Path / URL'),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.file_upload),
+                  onPressed: _pickImage,
+                  tooltip: 'Pick Image from Gallery',
+                ),
+              ],
+            ),
             const SizedBox(height: 20),
-            if (_imageUrlController.text.trim().isNotEmpty)
-              Image.network(
-                _imageUrlController.text.trim(),
-                height: 180,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
-              ),
+            if (imagePath.isNotEmpty)
+              imagePath.startsWith('http')
+                  ? Image.network(
+                      imagePath,
+                      height: 180,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
+                    )
+                  : Image.file(
+                      File(imagePath),
+                      height: 180,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
+                    ),
           ],
         ),
       ),

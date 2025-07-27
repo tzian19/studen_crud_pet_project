@@ -5,7 +5,6 @@ import '../widgets/notes_navigation_rail.dart';
 import '../widgets/note_card.dart';
 import '../../domain/entities/note.dart';
 import 'add_note_page.dart';
-import 'edit_note_page.dart';
 class NotesHomePage extends StatefulWidget {
   const NotesHomePage({super.key});
 
@@ -19,6 +18,7 @@ class _NotesHomePageState extends State<NotesHomePage> {
   List<Note> musicNotes = [];
   List<Note> imageNotes = [];
   final AudioPlayer _audioPlayer = AudioPlayer();
+  @override
   void initState() {
     super.initState();
     notes = [
@@ -117,82 +117,87 @@ class _NotesHomePageState extends State<NotesHomePage> {
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
-    final currentNotes = _getCurrentNotes();
-    
-    return Scaffold(
-      body: Row(
-        children: [
-          NotesNavigationRail(
-            selectedIndex: _selectedIndex,
-            onDestinationSelected: (index) {
-              setState(() {
-                _selectedIndex = index;
-              });
-            },
-          ),
-          Expanded(
-            child: Container(
-              color: _selectedIndex == 0
-                  ? Colors.white
-                  : _selectedIndex == 1
-                      ? Colors.blue[50]
-                      : Colors.green[50],
-              child: ListView.builder(
-                itemCount: currentNotes.length,
-                itemBuilder: (context, index) {
-                  final note = currentNotes[index];
-                  return NoteCard(
-                    image: Image.network(
-                      note.imageUrl.isEmpty
-                          ? 'https://cdn-icons-png.flaticon.com/512/1250/1250680.png'
-                          : note.imageUrl,
+    return BlocBuilder<NotesBloc, NotesState>(
+      builder: (context, state) {
+        if (state is NotesLoading) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state is NotesLoaded) {
+          final currentNotes = _getCurrentNotes(state);
+          return Scaffold(
+            body: Row(
+              children: [
+                NotesNavigationRail(
+                  selectedIndex: _selectedIndex,
+                  onDestinationSelected: (index) {
+                    setState(() {
+                      _selectedIndex = index;
+                    });
+                  },
+                ),
+                Expanded(
+                  child: Container(
+                    color: _selectedIndex == 0
+                        ? Colors.white
+                        : _selectedIndex == 1
+                            ? Colors.blue[50]
+                            : Colors.green[50],
+                    child: RefreshIndicator(
+                      onRefresh: () async {
+                        context.read<NotesBloc>().add(GetNotesEvent());
+                      },
+                      child: ListView.builder(
+                        itemCount: currentNotes.length,
+                        itemBuilder: (context, index) {
+                        final note = currentNotes[index];
+                        return NoteCard(
+                          image: Image.network(
+                            note.imageUrl.isEmpty
+                                ? 'https://cdn-icons-png.flaticon.com/512/1250/1250680.png'
+                                : note.imageUrl,
+                          ),
+                          title: note.title,
+                          content: note.content,
+                          count: index + 1,
+                          onTap: () => _handleNoteTap(note),
+                          onDelete: () => _confirmDelete(note),
+                        );
+                      },
                     ),
-                    title: note.title,
-                    content: note.content,
-                    count: index + 1,
-                    onTap: () => _handleNoteTap(note),
-                    onDelete: () => _confirmDelete(note),
-                  );
-  },    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => AddNotePage(
-                onAdd: (newNote) {
-                  setState(() {
-                    switch (_selectedIndex) {
-                      case 0:
-                        notes.add(newNote);
-                        break;
-                      case 1:
-                        musicNotes.add(newNote);
-                        break;
-                      case 2:
-                        imageNotes.add(newNote);
-                        break;
-                    }
-                  });
-                },
-                noteType: _selectedIndex,
+            floatingActionButton: FloatingActionButton.extended(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => AddNotePage(
+                      onAdd: (newNote) {
+                        context.read<NotesBloc>().add(AddNoteEvent(newNote, _selectedIndex));
+                      },
+                      noteType: _selectedIndex,
+                    ),
+                  ),
+                );
+              },
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              icon: const Icon(Icons.add),
+              label: Text(
+                'Add ${_selectedIndex == 0 ? 'Note' : _selectedIndex == 1 ? 'Music Note' : 'Image Note'}',
+                style: TextStyle(fontSize: 16),
               ),
             ),
           );
-        },
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        icon: const Icon(Icons.add),
-        label: Text(
-          'Add ${_selectedIndex == 0 ? 'Note' : _selectedIndex == 1 ? 'Music Note' : 'Image Note'}',
-          style: TextStyle(fontSize: 16),
-        ),
-      ),
+        } else if (state is NotesError) {
+          return Center(child: Text(state.message));
+        } else {
+          return const SizedBox.shrink();
+        }
+      },
     );
   }
 }

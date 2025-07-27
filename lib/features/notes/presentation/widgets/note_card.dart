@@ -26,9 +26,9 @@ class NoteCard extends StatelessWidget {
       child: ListTile(
         leading: SizedBox(
           width: 50,
-          child: image,
+          height: 50,
+          child: _buildImage(image),
         ),
-        title: Text(title),
         subtitle: Text(content),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
@@ -49,6 +49,26 @@ class NoteCard extends StatelessWidget {
               ),
         onTap: onTap,
       ),
+    );
+
+}
+Widget _buildImage(Image image) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: image.image is NetworkImage
+          ? image
+          : Builder(
+              builder: (context) {
+                final imageProvider = image.image;
+                if (imageProvider is FileImage) {
+                  final file = (imageProvider).file;
+                  if (!file.existsSync()) {
+                    return const Icon(Icons.broken_image);
+  }
+}
+                return image;
+              },
+            ),
     );
   }
 }

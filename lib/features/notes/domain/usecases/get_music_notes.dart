@@ -4,13 +4,13 @@ import '../repositories/note_repository.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 
-class GetNotes implements UseCase<List<Note>, NoParams> {
+class GetMusicNotes implements UseCase<List<Note>, NoParams> {
   final NoteRepository repository;
 
-  GetNotes(this.repository);
+  GetMusicNotes(this.repository);
 
   @override
   Future<Either<Failure, List<Note>>> call(NoParams params) async {
-    return await repository.getNotes();
+    return await repository.getMusicNotes();
   }
 }

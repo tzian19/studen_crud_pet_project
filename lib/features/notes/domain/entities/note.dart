@@ -18,7 +18,8 @@ class Note {
     String? content,
     String? imageUrl,
     int? count,
-  }) {
+  }) 
+  {
     return Note(
       id: id ?? this.id,
       title: title ?? this.title,
